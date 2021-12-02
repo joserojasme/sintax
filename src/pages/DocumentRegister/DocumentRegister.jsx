@@ -3,11 +3,14 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '../../components/Button';
 import Table from '../../components/Table';
+import Modal from '../../components/Modal';
+import Form from '../../components/Form';
 import { ReactComponent as ExcelIcon } from '../../assets/excel.svg';
 import initialData from '../../data/initialData';
 
 const DocumentRegister = ({ dataFromSearchButton }) => {
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
   useEffect(()=>{
     const voters = localStorage.getItem('voters');
     if(!voters || voters.length === 0){
@@ -45,7 +48,7 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
     <Box sx={{ flexGrow: 1, marginTop: '20px' }}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
-          <Button text='Nuevo votante' variant='contained' onClick={()=>alert('ok')} />
+          <Button text='Nuevo votante' variant='contained' onClick={() => setOpen(true)} />
         </Grid>
         <Grid item xs={4}>
           <ExcelIcon onClick={()=>alert('ok')} />
@@ -54,6 +57,7 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
           <Table data={data} onDelete={handleDelete} />
         </Grid>
       </Grid>
+      <Modal open={open}><Form handleOpen={() => setOpen(false)} /></Modal>
     </Box>
   );
 }
