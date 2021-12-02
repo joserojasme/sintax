@@ -8,7 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { Search, SearchIconWrapper, StyledInputBase } from './material.styles';
 
-export default function SearchAppBar() {
+const SearchAppBar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -38,10 +38,12 @@ export default function SearchAppBar() {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            OfesAuto
+            Inscripción de cédula para elecciones 2022
           </Typography>
         </Toolbar>
       </AppBar>
     </Box>
   );
 }
+
+export default SearchAppBar;
