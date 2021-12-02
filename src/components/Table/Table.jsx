@@ -19,6 +19,7 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
+import { documentType, cities } from '../../data/utils';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -195,7 +196,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function EnhancedTable({data, onDelete}) {
-  const [order, setOrder] = React.useState('desc');
+  const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('name');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
@@ -250,14 +251,20 @@ export default function EnhancedTable({data, onDelete}) {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
+  const getDocumentTypeName = (id) => {
+    const documentTypeSelected = documentType.filter(item => item.id === id);
+    return documentTypeSelected[0].name;
+  }
+
+  const getCityName = (id) => {
+    const citySelected = cities.filter(city => city.id === id);
+    return citySelected[0].name;
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -314,7 +321,7 @@ export default function EnhancedTable({data, onDelete}) {
                       >
                         {row.name}
                       </TableCell>
-                      <TableCell align="left">{`${row.documentType} - ${row.document}`}</TableCell>
+                      <TableCell align="left">{`${getDocumentTypeName(row.documentType)} - ${row.document}`}</TableCell>
                       <TableCell align="left">{row.idCity}</TableCell>
                       <TableCell align="left">{row.phone1}</TableCell>
                       <TableCell align="left">{row.phone2}</TableCell>
