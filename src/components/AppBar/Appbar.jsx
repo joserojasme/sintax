@@ -8,7 +8,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { Search, SearchIconWrapper, StyledInputBase } from './material.styles';
 
-const SearchAppBar = () => {
+const SearchAppBar = ({ onChange }) => {
+  const [valueSearch, setValueSearch] = React.useState('');
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -28,8 +29,14 @@ const SearchAppBar = () => {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              id='search'
+              value={valueSearch}
               placeholder="Escribe para buscar..."
               inputProps={{ 'aria-label': 'search' }}
+              onChange={(event)=>{
+                setValueSearch(event.target.value)
+                onChange(event.target.value)
+              }}
             />
           </Search>
           <Typography
@@ -38,7 +45,7 @@ const SearchAppBar = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            Inscripción de cédula para elecciones 2022
+            Inscripción de cédulas para elecciones 2022
           </Typography>
         </Toolbar>
       </AppBar>
