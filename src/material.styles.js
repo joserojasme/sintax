@@ -6,8 +6,7 @@ export const theme = createTheme({
       main: '#121f3d',
       contrastText: '#fff',
     },
-    secondary: 
-    {
+    secondary: {
       main: '#484848',
     },
     error: {

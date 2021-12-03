@@ -7,25 +7,33 @@ import TextField from '@mui/material/TextField';
 import Select from '../Select';
 import Button from '../Button';
 import { documentType, countries, states, cities } from '../../data/utils';
+import { theme } from '../../material.styles';
 
-const Item = styled(Paper)(({ theme }) => ({
+const Item = styled(Paper)(() => ({
   ...theme.typography.button,
   padding: theme.spacing(1),
   textAlign: 'center',
-  color: theme.palette.text.primary,
+  color: theme.palette.secundary,
 }));
 
-const Form = ({handleOpen}) => {
+const ItemError = styled(Paper)(() => ({
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: '#cc0000',
+}));
+
+const Form = ({handleOpen, onSubmit}) => {
   const [docType, setDocType] = React.useState(null);
-  const [name, setName] = React.useState('');
-  const [documentNumber, setDocumentNumber] = React.useState('');
+  const [name, setName] = React.useState(null);
+  const [documentNumber, setDocumentNumber] = React.useState(null);
   const [country, setCountry] = React.useState(null);
   const [dep, setDep] = React.useState(null);
   const [city, setCity] = React.useState(null);
   const [depList, setDepList] = React.useState(null);
   const [cityList, setCityList] = React.useState(null);
-  const [phone1, setPhone1] = React.useState('');
-  const [phone2, setPhone2] = React.useState('');
+  const [phone1, setPhone1] = React.useState(null);
+  const [phone2, setPhone2] = React.useState(null);
+  const [error, setError] = React.useState(false);
 
   useEffect(()=>{
     if(country){
@@ -41,12 +49,46 @@ const Form = ({handleOpen}) => {
     }
   },[dep])
 
+  const getCityName = (id) => {
+    const citySelected = cities.filter(city => city.id === id);
+    return citySelected[0].name;
+  }
+
+  const handleSave = () =>{
+    if(!docType || !name || !documentNumber || !country || !dep || !city || !phone1 || !phone2){
+      setError(true);
+      return;
+    }
+    if(docType.length === 0 || name.length === 0 || documentNumber.length === 0 || country.length === 0 || 
+      dep.length === 0 || city.length === 0 || phone1.length === 0 || phone2.length === 0){
+      setError(true);
+      return;
+    }
+
+    setError(false);
+    const data = {
+      name: name,
+      documentType: docType,
+      document: documentNumber,
+      idCity: getCityName(city),
+      phone1: phone1,
+      phone2: phone2
+    }
+
+    onSubmit(data);
+  }
+
   return (
     <Box sx={{ flexGrow: 1, marginTop: '20px' }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Item>Agregar o actualizar votante</Item>
         </Grid>
+        {error &&
+          <Grid item xs={12}>
+            <ItemError>Todos los campos deben ser ingresados</ItemError>
+          </Grid>
+        }
         <Grid item xs={6}>
           <TextField value={name} onChange={(event) => setName(event.target.value)} fullWidth label="Nombre completo" color="primary" focused />
         </Grid>
@@ -72,7 +114,7 @@ const Form = ({handleOpen}) => {
           <TextField value={phone2} onChange={(event) => setPhone2(event.target.value)} label="Celular" color="primary" />
         </Grid>
         <Grid item xs={2}>
-          <Button text='Guardar' variant='contained' onClick={()=>alert('ok')} />
+          <Button text='Guardar' variant='contained' onClick={handleSave} />
         </Grid>
         <Grid item xs={2}>
           <Button text='Cancelar' variant='contained' onClick={handleOpen} />

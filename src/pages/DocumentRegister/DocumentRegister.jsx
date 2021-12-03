@@ -18,7 +18,7 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
       localStorage.removeItem('votersTemp')
       setData(initialData);
     }else{
-      localStorage.setItem('voters', JSON.stringify(initialData));
+      localStorage.setItem('voters', voters);
       localStorage.removeItem('votersTemp')
       setData(JSON.parse(voters));
     }
@@ -32,9 +32,9 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
   }, [dataFromSearchButton])
 
   const handleDelete = (items) => {
-    const voters = JSON.parse(localStorage.getItem('voters'));
+    const voters = JSON.parse(localStorage.getItem('voters')) ?? [];
     const newVoters = voters.filter(voter => items.every(item => item !== voter.id))
-    if(newVoters.length === 0){
+    if(newVoters && newVoters.length === 0){
       localStorage.removeItem('voters')
       localStorage.removeItem('votersTemp')
     }else{
@@ -42,6 +42,14 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
       localStorage.removeItem('votersTemp')
     }
     setData(newVoters);
+  }
+
+  const onSubmit = (data) => {
+    const voters = JSON.parse(localStorage.getItem('voters')) ?? [];
+    voters.push({id: voters.length, ...data});
+    localStorage.setItem('voters', JSON.stringify(voters));
+    setOpen(false);
+    setData(voters);
   }
 
   return (
@@ -57,7 +65,7 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
           <Table data={data} onDelete={handleDelete} />
         </Grid>
       </Grid>
-      <Modal open={open}><Form handleOpen={() => setOpen(false)} /></Modal>
+      <Modal open={open}><Form handleOpen={() => setOpen(false)} onSubmit={onSubmit} /></Modal>
     </Box>
   );
 }

@@ -19,7 +19,7 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
-import { documentType, cities } from '../../data/utils';
+import { documentType } from '../../data/utils';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -259,11 +259,6 @@ export default function EnhancedTable({data, onDelete}) {
   const getDocumentTypeName = (id) => {
     const documentTypeSelected = documentType.filter(item => item.id === id);
     return documentTypeSelected[0].name;
-  }
-
-  const getCityName = (id) => {
-    const citySelected = cities.filter(city => city.id === id);
-    return citySelected[0].name;
   }
 
   return (
