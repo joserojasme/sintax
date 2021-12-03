@@ -21,6 +21,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { visuallyHidden } from '@mui/utils';
 import { documentType } from '../../data/utils';
+import TableDetail from '../../components/TableDetail';
+import { cities } from '../../data/utils';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -93,18 +95,12 @@ function EnhancedTableHead(props) {
   };
 
   return (
-    <TableHead>
+    <TableHead style={{background: '#4fbc39'}}>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
+           <TableSortLabel>
+          Eliminar
+      </TableSortLabel>
         </TableCell>
         <TableCell padding="checkbox">
           <TableSortLabel>
@@ -201,7 +197,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable({data, onDelete, onEdit, onDetail}) {
+export default function EnhancedTable({data, onDelete, onEdit, onDetail, nameDetail}) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('name');
   const [selected, setSelected] = React.useState([]);
@@ -267,6 +263,11 @@ export default function EnhancedTable({data, onDelete, onEdit, onDetail}) {
     return documentTypeSelected[0].name;
   }
 
+  const getCityName = (id) => {
+    const citySelected = cities.filter(city => city.id === id);
+    return citySelected[0].name;
+  }
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
@@ -293,6 +294,7 @@ export default function EnhancedTable({data, onDelete, onEdit, onDetail}) {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
+                    <>
                     <TableRow
                       role="checkbox"
                       aria-checked={isItemSelected}
@@ -323,13 +325,28 @@ export default function EnhancedTable({data, onDelete, onEdit, onDetail}) {
                         {row.name}
                       </TableCell>
                       <TableCell align="left">{`${getDocumentTypeName(row.documentType)} - ${row.document}`}</TableCell>
-                      <TableCell align="left">{row.idCity}</TableCell>
+                      <TableCell align="left">{getCityName(row.idCity)}</TableCell>
                       <TableCell align="left">{row.phone1}</TableCell>
                       <TableCell align="left">{row.phone2}</TableCell>
                       <TableCell padding="checkbox">
-                        <VisibilityIcon className={{zIndex: 10000}} onClick={() => onDetail(row.name)} />
+                        <VisibilityIcon className={{zIndex: 10000}} onClick={() => onDetail(nameDetail && nameDetail.name ? null : row.name, row.id)} />
                       </TableCell>
                     </TableRow>
+                    {nameDetail && nameDetail.name !== null && nameDetail.id === row.id &&
+                    <TableRow>
+                    <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                        align='center'
+                        colSpan={8}
+                      >
+                      <TableDetail name={nameDetail.name} />
+                      </TableCell>
+                    </TableRow>
+                }
+                    </>
                   );
                 })}
               {emptyRows > 0 && (

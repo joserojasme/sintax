@@ -3,12 +3,12 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '../../components/Button';
 import Table from '../../components/Table';
-import TableDetail from '../../components/TableDetail';
 import Modal from '../../components/Modal';
 import Form from '../../components/Form';
 import { ReactComponent as ExcelIcon } from '../../assets/excel.svg';
 import initialData from '../../data/initialData';
 import ExportExcel from 'react-export-excel';
+import debounce from '@mui/utils/debounce';
 
 const  ExcelFile = ExportExcel.ExcelFile;
 const  ExcelSheet = ExportExcel.ExcelSheet;
@@ -21,14 +21,21 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
   const [nameDetail, setNameDetail] = useState(null);
   useEffect(()=>{
     const voters = localStorage.getItem('voters');
+    const votersTemp = localStorage.getItem('votersTemp');
     if(!voters || voters.length === 0){
       localStorage.setItem('voters', JSON.stringify(initialData));
       localStorage.removeItem('votersTemp')
       setData(initialData);
     }else{
-      localStorage.setItem('voters', voters);
-      localStorage.removeItem('votersTemp')
-      setData(JSON.parse(voters));
+      if(votersTemp){
+        localStorage.setItem('voters', votersTemp);
+        localStorage.removeItem('votersTemp')
+        setData(JSON.parse(votersTemp));
+      }else{
+        localStorage.setItem('voters', voters);
+        localStorage.removeItem('votersTemp')
+        setData(JSON.parse(voters));
+      }
     }
   }, []);
 
@@ -77,8 +84,9 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
     setNameDetail(null);
   }
 
-  const onDetail = (name) => {
-    setNameDetail(name);
+  const onDetail = (name, id) => {
+    setNameDetail({name: name, id});
+    setData(data);
   }
 
   return (
@@ -103,11 +111,7 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
           </ExcelFile>
         </Grid>
         <Grid item xs={12}>
-          <Table data={data} onDelete={handleDelete} onEdit={onEdit} onDetail={onDetail} />
-        </Grid>
-        <Grid item xs={12}>
-          {nameDetail && 
-          <TableDetail name={nameDetail} />}
+          <Table data={data} onDelete={handleDelete} onEdit={onEdit} onDetail={onDetail} nameDetail={nameDetail} />
         </Grid>
       </Grid>
       <Modal open={open}><Form handleOpen={() => setOpen(false)} onSubmit={onSubmit} idEdit={idEdit} data={data} /></Modal>

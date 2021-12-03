@@ -5,16 +5,15 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const BasicSelect = ({ value, data, handleChange, label }) => {
+const BasicSelect = ({ value, data, handleChange, label, idEdit }) => {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">{label}</InputLabel>
+        {!idEdit && <InputLabel id="demo-simple-select-label">{label}</InputLabel>}
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={value}
-          label="Age"
           onChange={handleChange}
         >
           {data && data.map(item =>(

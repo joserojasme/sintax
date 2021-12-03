@@ -43,14 +43,20 @@ const Form = ({handleOpen, onSubmit, idEdit, data}) => {
   },[country])
 
   useEffect(()=>{
-    
     if(idEdit){
       const dataEdit = data.filter(item => item.id === idEdit);
-      const { name, document, phone1, phone2 } = dataEdit[0];
+      const { name, document, phone1, phone2, documentType, idCity } = dataEdit[0];
+      const city = cities.filter(item => item.id === idCity);
+      const state = states.filter(item => item.id === city[0].id_state);
+      const country = countries.filter(item => item.id === state[0].id_country);
       setName(name);
       setDocumentNumber(document);
       setPhone1(phone1);
       setPhone2(phone2);
+      setDocType(documentType);
+      setCountry(country[0].id);
+      setDep(state[0].id);
+      setCity(city[0].id);
     }
   },[])
 
@@ -60,11 +66,6 @@ const Form = ({handleOpen, onSubmit, idEdit, data}) => {
       setCityList(citiesList);
     }
   },[dep])
-
-  const getCityName = (id) => {
-    const citySelected = cities.filter(city => city.id === id);
-    return citySelected[0].name;
-  }
 
   const handleSave = () => {
     if(!docType || !name || !documentNumber || !country || !dep || !city || !phone1 || !phone2){
@@ -82,12 +83,18 @@ const Form = ({handleOpen, onSubmit, idEdit, data}) => {
       name: name,
       documentType: docType,
       document: documentNumber,
-      idCity: getCityName(city),
+      idCity: city,
+      cityName: getCityName(city),
       phone1: phone1,
       phone2: phone2
     }
 
     onSubmit(data, idEdit);
+  }
+
+  const getCityName = (id) => {
+    const citySelected = cities.filter(city => city.id === id);
+    return citySelected[0].name;
   }
 
   return (
@@ -105,19 +112,19 @@ const Form = ({handleOpen, onSubmit, idEdit, data}) => {
           <TextField value={name} onChange={(event) => setName(event.target.value)} fullWidth label="Nombre completo" color="primary" focused />
         </Grid>
         <Grid item xs={3}>
-          <Select data={documentType} value={docType} handleChange={(event) => setDocType(event.target.value)} label='Tipo de documento' />
+          <Select data={documentType} value={docType} handleChange={(event) => setDocType(event.target.value)} label='Tipo de documento' idEdit={idEdit} />
         </Grid>
         <Grid item xs={3}>
           <TextField value={documentNumber} onChange={(event) => setDocumentNumber(event.target.value)} label="No. documento" color="primary" />
         </Grid>
         <Grid item xs={4}>
-          <Select data={countries} value={country} handleChange={(event) => setCountry(event.target.value)} label='Pais' />
+          <Select data={countries} value={country} handleChange={(event) => setCountry(event.target.value)} label='Pais' idEdit={idEdit} />
         </Grid>
         <Grid item xs={4}>
-         <Select data={depList} value={dep} handleChange={(event) => setDep(event.target.value)} label='Departamento' />
+         <Select data={depList} value={dep} handleChange={(event) => setDep(event.target.value)} label='Departamento' idEdit={idEdit} />
         </Grid>
         <Grid item xs={4}>
-          <Select data={cityList} value={city} handleChange={(event) => setCity(event.target.value)} label='Ciudad' />
+          <Select data={cityList} value={city} handleChange={(event) => setCity(event.target.value)} label='Ciudad' idEdit={idEdit} />
         </Grid>
         <Grid item xs={3}>
           <TextField value={phone1} onChange={(event) => setPhone1(event.target.value)} label="Teléfono" color="primary" />
