@@ -8,6 +8,11 @@ import Modal from '../../components/Modal';
 import Form from '../../components/Form';
 import { ReactComponent as ExcelIcon } from '../../assets/excel.svg';
 import initialData from '../../data/initialData';
+import ExportExcel from 'react-export-excel';
+
+const  ExcelFile = ExportExcel.ExcelFile;
+const  ExcelSheet = ExportExcel.ExcelSheet;
+const  ExcelColum = ExportExcel.ExcelColum;
 
 const DocumentRegister = ({ dataFromSearchButton }) => {
   const [data, setData] = useState([]);
@@ -87,7 +92,15 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
           }} />
         </Grid>
         <Grid item xs={4}>
-          <ExcelIcon onClick={()=>alert('ok')} />
+          <ExcelFile element={<ExcelIcon />} filename="Voters">
+            <ExcelSheet data={data} name='Votantes elecciones 2022'>
+              <ExcelColum label="Nombre" value="name" />
+              <ExcelColum label="Número de documento" value="document" />
+              <ExcelColum label="Ciudad" value="idCity" />
+              <ExcelColum label="Teléfono" value="phone1" />
+              <ExcelColum label="Celular" value="phone2" />
+            </ExcelSheet>
+          </ExcelFile>
         </Grid>
         <Grid item xs={12}>
           <Table data={data} onDelete={handleDelete} onEdit={onEdit} onDetail={onDetail} />
