@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '../../components/Button';
 import Table from '../../components/Table';
+import TableDetail from '../../components/TableDetail';
 import Modal from '../../components/Modal';
 import Form from '../../components/Form';
 import { ReactComponent as ExcelIcon } from '../../assets/excel.svg';
@@ -12,8 +13,8 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [idEdit, setIdEdit] = useState(null);
+  const [nameDetail, setNameDetail] = useState(null);
   useEffect(()=>{
-    debugger;
     const voters = localStorage.getItem('voters');
     if(!voters || voters.length === 0){
       localStorage.setItem('voters', JSON.stringify(initialData));
@@ -44,6 +45,7 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
       localStorage.removeItem('votersTemp')
     }
     setData(newVoters);
+    setNameDetail(null);
   }
 
   const onSubmit = (data, idEdit) => {
@@ -61,11 +63,17 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
       setData(voters);
     }
     setOpen(false);
+    setNameDetail(null);
   }
 
   const onEdit = (id) => {
     setIdEdit(id);
     setOpen(true);
+    setNameDetail(null);
+  }
+
+  const onDetail = (name) => {
+    setNameDetail(name);
   }
 
   return (
@@ -82,7 +90,11 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
           <ExcelIcon onClick={()=>alert('ok')} />
         </Grid>
         <Grid item xs={12}>
-          <Table data={data} onDelete={handleDelete} onEdit={onEdit} />
+          <Table data={data} onDelete={handleDelete} onEdit={onEdit} onDetail={onDetail} />
+        </Grid>
+        <Grid item xs={12}>
+          {nameDetail && 
+          <TableDetail name={nameDetail} />}
         </Grid>
       </Grid>
       <Modal open={open}><Form handleOpen={() => setOpen(false)} onSubmit={onSubmit} idEdit={idEdit} data={data} /></Modal>

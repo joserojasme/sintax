@@ -18,6 +18,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { visuallyHidden } from '@mui/utils';
 import { documentType } from '../../data/utils';
 
@@ -131,6 +132,11 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell padding="checkbox">
+          <TableSortLabel>
+              Detalle
+          </TableSortLabel>
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -195,7 +201,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable({data, onDelete, onEdit}) {
+export default function EnhancedTable({data, onDelete, onEdit, onDetail}) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('name');
   const [selected, setSelected] = React.useState([]);
@@ -320,6 +326,9 @@ export default function EnhancedTable({data, onDelete, onEdit}) {
                       <TableCell align="left">{row.idCity}</TableCell>
                       <TableCell align="left">{row.phone1}</TableCell>
                       <TableCell align="left">{row.phone2}</TableCell>
+                      <TableCell padding="checkbox">
+                        <VisibilityIcon className={{zIndex: 10000}} onClick={() => onDetail(row.name)} />
+                      </TableCell>
                     </TableRow>
                   );
                 })}
