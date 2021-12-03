@@ -11,7 +11,9 @@ import initialData from '../../data/initialData';
 const DocumentRegister = ({ dataFromSearchButton }) => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
+  const [idEdit, setIdEdit] = useState(null);
   useEffect(()=>{
+    debugger;
     const voters = localStorage.getItem('voters');
     if(!voters || voters.length === 0){
       localStorage.setItem('voters', JSON.stringify(initialData));
@@ -44,28 +46,46 @@ const DocumentRegister = ({ dataFromSearchButton }) => {
     setData(newVoters);
   }
 
-  const onSubmit = (data) => {
+  const onSubmit = (data, idEdit) => {
     const voters = JSON.parse(localStorage.getItem('voters')) ?? [];
-    voters.push({id: voters.length, ...data});
-    localStorage.setItem('voters', JSON.stringify(voters));
+    if(idEdit){
+      const newVoters = voters.filter(item => item.id !== idEdit);
+      newVoters.push({id: newVoters.length === 0 ? 1 : newVoters.length + 1, ...data});
+      newVoters.map((item, index) => item.id = index + 1);
+      localStorage.setItem('voters', JSON.stringify(newVoters));
+      setData(newVoters);
+    } else {
+      voters.push({id: voters.length === 0 ? 1 : voters.length + 1, ...data});
+      voters.map((item, index) => item.id = index + 1);
+      localStorage.setItem('voters', JSON.stringify(voters));
+      setData(voters);
+    }
     setOpen(false);
-    setData(voters);
+  }
+
+  const onEdit = (id) => {
+    setIdEdit(id);
+    setOpen(true);
   }
 
   return (
     <Box sx={{ flexGrow: 1, marginTop: '20px' }}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
-          <Button text='Nuevo votante' variant='contained' onClick={() => setOpen(true)} />
+          <Button text='Nuevo votante' variant='contained' 
+          onClick={() => {
+            setIdEdit(null);
+            setOpen(true);
+          }} />
         </Grid>
         <Grid item xs={4}>
           <ExcelIcon onClick={()=>alert('ok')} />
         </Grid>
         <Grid item xs={12}>
-          <Table data={data} onDelete={handleDelete} />
+          <Table data={data} onDelete={handleDelete} onEdit={onEdit} />
         </Grid>
       </Grid>
-      <Modal open={open}><Form handleOpen={() => setOpen(false)} onSubmit={onSubmit} /></Modal>
+      <Modal open={open}><Form handleOpen={() => setOpen(false)} onSubmit={onSubmit} idEdit={idEdit} data={data} /></Modal>
     </Box>
   );
 }

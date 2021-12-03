@@ -22,7 +22,7 @@ const ItemError = styled(Paper)(() => ({
   color: '#cc0000',
 }));
 
-const Form = ({handleOpen, onSubmit}) => {
+const Form = ({handleOpen, onSubmit, idEdit, data}) => {
   const [docType, setDocType] = React.useState(null);
   const [name, setName] = React.useState(null);
   const [documentNumber, setDocumentNumber] = React.useState(null);
@@ -43,6 +43,18 @@ const Form = ({handleOpen, onSubmit}) => {
   },[country])
 
   useEffect(()=>{
+    
+    if(idEdit){
+      const dataEdit = data.filter(item => item.id === idEdit);
+      const { name, document, phone1, phone2 } = dataEdit[0];
+      setName(name);
+      setDocumentNumber(document);
+      setPhone1(phone1);
+      setPhone2(phone2);
+    }
+  },[])
+
+  useEffect(()=>{
     if(dep){
       const citiesList = cities.filter(item => item.id_state === dep);
       setCityList(citiesList);
@@ -54,7 +66,7 @@ const Form = ({handleOpen, onSubmit}) => {
     return citySelected[0].name;
   }
 
-  const handleSave = () =>{
+  const handleSave = () => {
     if(!docType || !name || !documentNumber || !country || !dep || !city || !phone1 || !phone2){
       setError(true);
       return;
@@ -75,7 +87,7 @@ const Form = ({handleOpen, onSubmit}) => {
       phone2: phone2
     }
 
-    onSubmit(data);
+    onSubmit(data, idEdit);
   }
 
   return (

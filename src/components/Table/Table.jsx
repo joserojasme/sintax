@@ -195,7 +195,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable({data, onDelete}) {
+export default function EnhancedTable({data, onDelete, onEdit}) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('name');
   const [selected, setSelected] = React.useState([]);
@@ -288,10 +288,9 @@ export default function EnhancedTable({data, onDelete}) {
 
                   return (
                     <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
+                      hover
                       tabIndex={-1}
                       key={row.id}
                       selected={isItemSelected}
@@ -303,10 +302,11 @@ export default function EnhancedTable({data, onDelete}) {
                           inputProps={{
                             'aria-labelledby': labelId,
                           }}
+                          onClick={(event) => handleClick(event, row.id)}
                         />
                       </TableCell>
                       <TableCell padding="checkbox">
-                        <EditIcon />
+                        <EditIcon className={{zIndex: 10000}} onClick={() => onEdit(row.id)} />
                       </TableCell>
                       <TableCell
                         component="th"
